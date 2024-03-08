@@ -3,18 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tswork/components/app_colors.dart';
 import 'package:tswork/components/ctrl_zy.dart';
 
-
-
-
-
-
-
 final drawingPointsProvider =
     StateNotifierProvider<PointsNotifier, List<Offset?>>(
         (ref) => PointsNotifier());
 
 final drawingLinesProvider =
-    StateNotifierProvider<LinesNotifier, List<List<List<Offset>>>>(
+    StateNotifierProvider<LinesNotifier, List<List<Offset>>>(
         (ref) => LinesNotifier());
 
 class PointsNotifier extends StateNotifier<List<Offset?>> {
@@ -61,7 +55,7 @@ class HomePage extends ConsumerWidget {
             onPanStart: (DragStartDetails details) {
               ref
                   .read(drawingLinesProvider.notifier)
-                  .addPoint(details.localPosition);
+                  .startLine(details.localPosition);
             },
             onPanUpdate: (DragUpdateDetails details) {
               ref
@@ -69,15 +63,14 @@ class HomePage extends ConsumerWidget {
                   .addPoint(details.localPosition);
             },
             onPanEnd: (DragEndDetails details) {
-              ref.read(drawingLinesProvider.notifier).endDrawing();
+              ref.read(drawingLinesProvider.notifier).endLine();
             },
             child: CustomPaint(
-              painter: LinePainter(lines),
+              painter: LinePainter(
+                  ref.watch(drawingLinesProvider.notifier).currentLines),
               child: Container(),
             ),
           ),
-
-          
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Stack(
@@ -93,37 +86,36 @@ class HomePage extends ConsumerWidget {
                     height: 31,
                     child: Row(
                       children: [
-                      Flexible(
-  child: Consumer(
-    builder: (context, ref, child) {
-      return IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: AppColors.iconColor,
-        ),
-        onPressed: () {
-          ref.read(drawingLinesProvider.notifier).undo();
-        },
-      );
-    },
-  ),
-),
-Flexible(
-  child: Consumer(
-    builder: (context, ref, child) {
-      return IconButton(
-        icon: Icon(
-          Icons.arrow_forward,
-          color: AppColors.iconColor,
-        ),
-        onPressed: () {
-          ref.read(drawingLinesProvider.notifier).redo();
-        },
-      );
-    },
-  ),
-),
-
+                        Flexible(
+                          child: Consumer(
+                            builder: (context, ref, child) {
+                              return IconButton(
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: AppColors.iconColor,
+                                ),
+                                onPressed: () {
+                                  // ref.read(drawingLinesProvider.notifier).undo();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Flexible(
+                          child: Consumer(
+                            builder: (context, ref, child) {
+                              return IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward,
+                                  color: AppColors.iconColor,
+                                ),
+                                onPressed: () {
+                                  // ref.read(drawingLinesProvider.notifier).redo();
+                                },
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -191,9 +183,7 @@ Flexible(
                                   ],
                                 ),
                               ),
-                              onTap: () {
-                                
-                              },
+                              onTap: () {},
                             ),
                           ],
                         ),
@@ -210,10 +200,8 @@ Flexible(
   }
 }
 
-
-
 class LinePainter extends CustomPainter {
-  final List<List<List<Offset>>> lines;
+  final List<List<Offset>> lines;
 
   LinePainter(this.lines);
 
@@ -225,9 +213,8 @@ class LinePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     for (var line in lines) {
-      for (var i = 0; i < line.length - 1; i++) {
-        if (line[i] != null && line[i + 1] != null)
-          canvas.drawLine(line[i][0], line[i + 1][0], paint);
+      if (line.length > 1) {
+        canvas.drawLine(line.first, line.last, paint);
       }
     }
   }
@@ -235,11 +222,3 @@ class LinePainter extends CustomPainter {
   @override
   bool shouldRepaint(LinePainter oldDelegate) => true;
 }
-
-
-
-
-
-
-
-
