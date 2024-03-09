@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tswork/components/app_colors.dart';
 import 'package:tswork/components/ctrl_zy.dart';
+import 'dart:math' as math; 
 
 final drawingPointsProvider =
     StateNotifierProvider<PointsNotifier, List<Offset?>>(
@@ -10,6 +12,7 @@ final drawingPointsProvider =
 final drawingLinesProvider =
     StateNotifierProvider<LinesNotifier, List<List<Offset>>>(
         (ref) => LinesNotifier());
+        
 
 class PointsNotifier extends StateNotifier<List<Offset?>> {
   PointsNotifier() : super([]);
@@ -71,6 +74,10 @@ class HomePage extends ConsumerWidget {
               child: Container(),
             ),
           ),
+
+
+
+
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Stack(
@@ -95,7 +102,9 @@ class HomePage extends ConsumerWidget {
                                   color: AppColors.iconColor,
                                 ),
                                 onPressed: () {
-                                  // ref.read(drawingLinesProvider.notifier).undo();
+                                  ref
+                                      .read(drawingLinesProvider.notifier)
+                                      .undo();
                                 },
                               );
                             },
@@ -110,7 +119,9 @@ class HomePage extends ConsumerWidget {
                                   color: AppColors.iconColor,
                                 ),
                                 onPressed: () {
-                                  // ref.read(drawingLinesProvider.notifier).redo();
+                                  ref
+                                      .read(drawingLinesProvider.notifier)
+                                      .redo();
                                 },
                               );
                             },
@@ -203,7 +214,7 @@ class HomePage extends ConsumerWidget {
 class LinePainter extends CustomPainter {
   final List<List<Offset>> lines;
 
-  LinePainter(this.lines);
+  LinePainter(this.lines); 
 
   @override
   void paint(Canvas canvas, Size size) {
