@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tswork/components/app_colors.dart';
 import 'package:tswork/components/ctrl_zy.dart';
-import 'dart:math' as math;
 
 final drawingPointsProvider =
     StateNotifierProvider<PointsNotifier, List<Offset?>>(
@@ -31,8 +30,7 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // final points = ref.watch(drawingPointsProvider);
     // final points = ref.watch(drawingLinesProvider);
-    final lines = ref.watch(drawingLinesProvider);
-
+    // final lines = ref.watch(drawingLinesProvider);
     // final lines = ref.watch(drawingLinesProvider);
     return Scaffold(
       backgroundColor: AppColors.notgrey,

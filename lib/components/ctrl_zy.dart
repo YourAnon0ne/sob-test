@@ -10,10 +10,10 @@ class LinesNotifier extends StateNotifier<List<List<Offset>>> {
   List<List<Offset>> _redoHistory = [];
 
   bool get canUndo => _currentIndex >= 0;
-  bool get canRedo => _redoHistory.isNotEmpty; 
+  bool get canRedo => _redoHistory.isNotEmpty;
 
   void startLine(Offset point) {
-    _redoHistory.clear(); 
+    _redoHistory.clear();
     if (_currentIndex < _linesHistory.length - 1) {
       _linesHistory = _linesHistory.sublist(0, _currentIndex + 1);
     }
@@ -37,7 +37,7 @@ class LinesNotifier extends StateNotifier<List<List<Offset>>> {
 
   void undo() {
     if (canUndo) {
-      _redoHistory.add(_linesHistory.removeAt(_currentIndex)); 
+      _redoHistory.add(_linesHistory.removeAt(_currentIndex));
       _currentIndex--;
       state = List.from(_linesHistory.sublist(0, _currentIndex + 1));
     }
