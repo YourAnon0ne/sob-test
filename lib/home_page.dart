@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tswork/components/app_colors.dart';
 import 'package:tswork/components/ctrl_zy.dart';
-import 'dart:math' as math; 
+import 'dart:math' as math;
 
 final drawingPointsProvider =
     StateNotifierProvider<PointsNotifier, List<Offset?>>(
@@ -12,7 +11,6 @@ final drawingPointsProvider =
 final drawingLinesProvider =
     StateNotifierProvider<LinesNotifier, List<List<Offset>>>(
         (ref) => LinesNotifier());
-        
 
 class PointsNotifier extends StateNotifier<List<Offset?>> {
   PointsNotifier() : super([]);
@@ -74,10 +72,6 @@ class HomePage extends ConsumerWidget {
               child: Container(),
             ),
           ),
-
-
-
-
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Stack(
@@ -96,114 +90,116 @@ class HomePage extends ConsumerWidget {
                         Flexible(
                           child: Consumer(
                             builder: (context, ref, child) {
+                              final notifier =
+                                  ref.watch(drawingLinesProvider.notifier);
                               return IconButton(
                                 icon: Icon(
                                   Icons.arrow_back,
-                                  color: AppColors.iconColor,
+                                  color: notifier.canUndo
+                                      ? Colors.black
+                                      : AppColors.iconColor,
                                 ),
-                                onPressed: () {
-                                  ref
-                                      .read(drawingLinesProvider.notifier)
-                                      .undo();
-                                },
+                                onPressed: notifier.canUndo
+                                    ? () => notifier.undo()
+                                    : null,
                               );
                             },
                           ),
                         ),
-                        Flexible(
-                          child: Consumer(
-                            builder: (context, ref, child) {
-                              return IconButton(
-                                icon: Icon(
-                                  Icons.arrow_forward,
-                                  color: AppColors.iconColor,
-                                ),
-                                onPressed: () {
-                                  ref
-                                      .read(drawingLinesProvider.notifier)
-                                      .redo();
-                                },
-                              );
-                            },
-                          ),
-                        ),
+                   Flexible(
+  child: Consumer(
+    builder: (context, ref, child) {
+      final notifier = ref.watch(drawingLinesProvider.notifier);
+      return IconButton(
+        icon: Icon(
+          Icons.arrow_forward,
+          color: notifier.canRedo ? Colors.black : AppColors.iconColor,
+        ),
+        onPressed: notifier.canRedo ? () {
+          notifier.redo();
+        } : null,
+      );
+    },
+  ),
+),
+
+
                       ],
                     ),
                   ),
                 ),
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(
-                        top: 700,
-                      ),
-                      alignment: Alignment.center,
-                      child: Container(
-                        height: 52,
-                        width: 359,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(13),
-                            color: AppColors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8, top: 7),
-                          child: Text(
-                            'Нажмите на любую точку экрана, чтобы построить угол',
-                            style: TextStyle(
-                              color: AppColors.black,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              height: 70,
-                              width: 360,
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(13),
-                              ),
-                            ),
-                            GestureDetector(
-                              child: Container(
-                                width: 336,
-                                height: 46.5,
-                                decoration: BoxDecoration(
-                                    color: AppColors.notgrey,
-                                    borderRadius: BorderRadius.circular(11)),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.cancel,
-                                      color: AppColors.naturalGray,
-                                      size: 13.5,
-                                    ),
-                                    Text(
-                                      'Отменить действие',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: AppColors.naturalGray),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {},
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
+          ),
+          Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(
+                  top: 700,
+                ),
+                alignment: Alignment.center,
+                child: Container(
+                  height: 52,
+                  width: 359,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13),
+                      color: AppColors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 7),
+                    child: Text(
+                      'Нажмите на любую точку экрана, чтобы построить угол',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        height: 70,
+                        width: 360,
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                      ),
+                      GestureDetector(
+                        child: Container(
+                          width: 336,
+                          height: 46.5,
+                          decoration: BoxDecoration(
+                              color: AppColors.notgrey,
+                              borderRadius: BorderRadius.circular(11)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.cancel,
+                                color: AppColors.naturalGray,
+                                size: 13.5,
+                              ),
+                              Text(
+                                'Отменить действие',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: AppColors.naturalGray),
+                              ),
+                            ],
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -214,7 +210,7 @@ class HomePage extends ConsumerWidget {
 class LinePainter extends CustomPainter {
   final List<List<Offset>> lines;
 
-  LinePainter(this.lines); 
+  LinePainter(this.lines);
 
   @override
   void paint(Canvas canvas, Size size) {
